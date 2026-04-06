@@ -356,7 +356,7 @@ def write_database(
             source_id TEXT,
             phrase TEXT NOT NULL,
             translation TEXT NOT NULL,
-            blank_phrase TEXT NOT NULL,
+            blank_index INTEGER NOT NULL,
             answer TEXT NOT NULL,
             answer_pos TEXT NOT NULL,
             options TEXT NOT NULL,
@@ -388,7 +388,6 @@ def write_database(
             skipped += 1
             continue
 
-        blank_phrase = entry["phrase"][:idx] + "___" + entry["phrase"][idx + len(text):]
         options = [text] + distractors
         random.shuffle(options)
 
@@ -398,7 +397,7 @@ def write_database(
             entry["source_id"],
             entry["phrase"],
             entry["translation"],
-            blank_phrase,
+            idx,
             text,
             pos,
             json.dumps(options),
@@ -408,7 +407,7 @@ def write_database(
         ))
 
     conn.executemany(
-        "INSERT INTO phrases (source_id, phrase, translation, blank_phrase, "
+        "INSERT INTO phrases (source_id, phrase, translation, blank_index, "
         "answer, answer_pos, options, level, cefr, topic) "
         "VALUES (?,?,?,?,?,?,?,?,?,?)",
         questions,
@@ -455,12 +454,13 @@ def write_database(
 
     print(f"\n  Sample questions:")
     for row in conn.execute(
-        "SELECT blank_phrase, translation, answer, options, level, cefr, answer_pos "
+        "SELECT phrase, blank_index, translation, answer, options, level, cefr, answer_pos "
         "FROM phrases ORDER BY RANDOM() LIMIT 5"
     ):
-        blank, trans, answer, opts, level, cefr, pos = row
+        phrase, bi, trans, answer, opts, level, cefr, pos = row
+        display = phrase[:bi] + "___" + phrase[bi + len(answer):]
         cefr_str = f"/{cefr}" if cefr else ""
-        print(f"\n    {blank}")
+        print(f"\n    {display}")
         print(f"    ({trans})")
         print(f"    Answer: {answer} [{pos}] | Options: {json.loads(opts)} | {level}{cefr_str}")
 
