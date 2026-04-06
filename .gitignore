@@ -1,0 +1,19 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Pipeline data and output
+data/
+packs/
+
+# Exploration / scratch scripts
+scratch/
+explore.py
+NOTES.md
