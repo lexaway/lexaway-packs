@@ -431,6 +431,10 @@ def write_database(
             pos: words[:30] for pos, words in pools.items()
         })),
     )
+    conn.execute(
+        "INSERT INTO meta (key, value) VALUES (?, ?)",
+        ("schema_version", "1"),
+    )
 
     conn.commit()
 
