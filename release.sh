@@ -25,7 +25,7 @@ fi
 if [[ "$SKIP_BUILD" == false ]]; then
   for lang in "${LANGUAGES[@]}"; do
     echo "==> Building $lang..."
-    uv run build --lang "$lang"
+    uv run python build.py --lang "$lang"
     echo ""
   done
 fi

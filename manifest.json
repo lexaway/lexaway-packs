@@ -1,6 +1,45 @@
 {
   "schema_version": 1,
   "packs": [
-    { "lang": "fra", "from_lang": "eng", "name": "French", "flag": "🇫🇷" }
+    {
+      "lang": "fra",
+      "from_lang": "eng",
+      "name": "French",
+      "flag": "🇫🇷",
+      "built_at": "2026-04-08T03:49:46.943563+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "spa",
+      "from_lang": "eng",
+      "name": "Spanish",
+      "flag": "🇪🇸",
+      "built_at": "2026-04-08T03:49:51.862812+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "deu",
+      "from_lang": "eng",
+      "name": "German",
+      "flag": "🇩🇪",
+      "built_at": "2026-04-08T03:51:02.095513+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "ita",
+      "from_lang": "eng",
+      "name": "Italian",
+      "flag": "🇮🇹",
+      "built_at": "2026-04-08T03:52:03.330976+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "por",
+      "from_lang": "eng",
+      "name": "Portuguese",
+      "flag": "🇧🇷",
+      "built_at": "2026-04-08T03:53:06.512302+00:00",
+      "schema_version": 1
+    }
   ]
 }

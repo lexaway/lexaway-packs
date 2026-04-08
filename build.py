@@ -538,7 +538,8 @@ def main():
 
     print("Step 5: Building distractor pools...")
     import spacy
-    nlp_stops = spacy.blank(lang[:2]).Defaults.stop_words
+    spacy_lang = SPACY_MODELS[lang].split("_")[0]  # "fr", "es", etc.
+    nlp_stops = spacy.blank(spacy_lang).Defaults.stop_words
     pools = build_distractor_pools(tagged, nlp_stops)
     for pos, words in sorted(pools.items(), key=lambda x: -len(x[1])):
         print(f"  {pos}: {len(words)} words")
