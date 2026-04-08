@@ -1,6 +1,12 @@
 """Tests for the core question-generation logic in build.py."""
 
-from build import pick_blank, pick_distractors, get_difficulty
+import json
+import sqlite3
+from pathlib import Path
+
+import pytest
+
+from build import pick_blank, pick_distractors, get_difficulty, update_manifest
 
 
 STOPS = {"je", "tu", "il", "de", "le", "la", "se", "en", "au", "du", "ce", "un", "une"}
@@ -124,3 +130,46 @@ class TestGetDifficulty:
     def test_case_insensitive(self):
         lookup = {"manger": "A1"}
         assert get_difficulty("Manger", lookup) == ("beginner", "A1")
+
+
+class TestUpdateManifest:
+    def _make_db(self, tmp_path: Path, built_at: str, schema_version: str) -> Path:
+        db_path = tmp_path / "test.db"
+        conn = sqlite3.connect(db_path)
+        conn.execute("CREATE TABLE meta (key TEXT PRIMARY KEY, value TEXT NOT NULL)")
+        conn.execute("INSERT INTO meta VALUES ('built_at', ?)", (built_at,))
+        conn.execute("INSERT INTO meta VALUES ('schema_version', ?)", (schema_version,))
+        conn.commit()
+        conn.close()
+        return db_path
+
+    def test_upserts_built_at_and_schema_version(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        manifest = {
+            "schema_version": 1,
+            "packs": [{"lang": "fra", "from_lang": "eng", "name": "French", "flag": "F"}],
+        }
+        Path("manifest.json").write_text(json.dumps(manifest))
+
+        db_path = self._make_db(tmp_path, "2026-04-07T00:00:00+00:00", "1")
+        update_manifest("fra", db_path)
+
+        result = json.loads(Path("manifest.json").read_text())
+        pack = result["packs"][0]
+        assert pack["built_at"] == "2026-04-07T00:00:00+00:00"
+        assert pack["schema_version"] == 1
+
+    def test_raises_when_lang_missing(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        manifest = {"schema_version": 1, "packs": []}
+        Path("manifest.json").write_text(json.dumps(manifest))
+
+        db_path = self._make_db(tmp_path, "2026-04-07T00:00:00+00:00", "1")
+        with pytest.raises(ValueError, match="No entry for 'fra'"):
+            update_manifest("fra", db_path)
+
+    def test_raises_when_no_manifest(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        db_path = self._make_db(tmp_path, "2026-04-07T00:00:00+00:00", "1")
+        with pytest.raises(FileNotFoundError):
+            update_manifest("fra", db_path)

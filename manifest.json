@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
   "packs": [
-    { "lang": "fra", "name": "French", "flag": "🇫🇷" }
+    { "lang": "fra", "from_lang": "eng", "name": "French", "flag": "🇫🇷" }
   ]
 }

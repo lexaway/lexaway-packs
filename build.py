@@ -480,6 +480,28 @@ def write_database(
 # Main
 # ---------------------------------------------------------------------------
 
+def update_manifest(lang: str, db_path: Path) -> None:
+    """Read built_at and schema_version from the pack DB and upsert into manifest.json."""
+    conn = sqlite3.connect(db_path)
+    meta = {row[0]: row[1] for row in conn.execute("SELECT key, value FROM meta")}
+    conn.close()
+
+    manifest_path = Path("manifest.json")
+    manifest = json.loads(manifest_path.read_text())
+
+    pack_entry = next((p for p in manifest["packs"] if p["lang"] == lang), None)
+    if pack_entry is None:
+        raise ValueError(
+            f"No entry for '{lang}' in manifest.json — add one with name/flag/from_lang first"
+        )
+
+    pack_entry["built_at"] = meta["built_at"]
+    pack_entry["schema_version"] = int(meta["schema_version"])
+
+    manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n")
+    print(f"\n  Updated manifest.json for {lang}")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Build a Lexaway language pack")
     parser.add_argument("--lang", required=True, help="ISO 639-3 language code (e.g. fra)")
@@ -528,6 +550,9 @@ def main():
     print("Step 7: Building database...")
     output_path = PACKS_DIR / f"{lang}.db"
     write_database(tagged, pools, cefr_lookup, nlp_stops, lang, output_path)
+
+    print("Step 8: Updating manifest...")
+    update_manifest(lang, output_path)
 
 
 if __name__ == "__main__":
