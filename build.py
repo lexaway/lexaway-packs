@@ -362,7 +362,11 @@ def write_database(
             options TEXT NOT NULL,
             level TEXT NOT NULL,
             cefr TEXT,
-            topic TEXT
+            topic TEXT,
+            easiness REAL NOT NULL DEFAULT 2.5,
+            interval_days INTEGER NOT NULL DEFAULT 0,
+            repetitions INTEGER NOT NULL DEFAULT 0,
+            next_review TEXT NOT NULL DEFAULT ''
         )
     """)
     conn.execute("""
