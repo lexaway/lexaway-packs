@@ -44,7 +44,7 @@ if [[ "$SKIP_BUILD" == false ]]; then
   for pair in "${PAIRS[@]}"; do
     from="${pair%%:*}"
     to="${pair##*:}"
-    echo "==> Building $from→$to..."
+    echo "==> Building $from->$to..."
     uv run python build.py --from-lang "$from" --lang "$to"
     echo ""
   done

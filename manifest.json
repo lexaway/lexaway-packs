@@ -1,40 +1,245 @@
 {
   "schema_version": 1,
   "packs": [
-    {"lang": "fra", "from_lang": "eng", "name": "French", "flag": "🇫🇷", "built_at": "", "schema_version": 1},
-    {"lang": "spa", "from_lang": "eng", "name": "Spanish", "flag": "🇪🇸", "built_at": "", "schema_version": 1},
-    {"lang": "deu", "from_lang": "eng", "name": "German", "flag": "🇩🇪", "built_at": "", "schema_version": 1},
-    {"lang": "ita", "from_lang": "eng", "name": "Italian", "flag": "🇮🇹", "built_at": "", "schema_version": 1},
-    {"lang": "por", "from_lang": "eng", "name": "Portuguese", "flag": "🇧🇷", "built_at": "", "schema_version": 1},
-
-    {"lang": "eng", "from_lang": "fra", "name": "Anglais", "flag": "🇬🇧", "built_at": "", "schema_version": 1},
-    {"lang": "spa", "from_lang": "fra", "name": "Espagnol", "flag": "🇪🇸", "built_at": "", "schema_version": 1},
-    {"lang": "deu", "from_lang": "fra", "name": "Allemand", "flag": "🇩🇪", "built_at": "", "schema_version": 1},
-    {"lang": "ita", "from_lang": "fra", "name": "Italien", "flag": "🇮🇹", "built_at": "", "schema_version": 1},
-    {"lang": "por", "from_lang": "fra", "name": "Portugais", "flag": "🇧🇷", "built_at": "", "schema_version": 1},
-
-    {"lang": "eng", "from_lang": "spa", "name": "Inglés", "flag": "🇬🇧", "built_at": "", "schema_version": 1},
-    {"lang": "fra", "from_lang": "spa", "name": "Francés", "flag": "🇫🇷", "built_at": "", "schema_version": 1},
-    {"lang": "deu", "from_lang": "spa", "name": "Alemán", "flag": "🇩🇪", "built_at": "", "schema_version": 1},
-    {"lang": "ita", "from_lang": "spa", "name": "Italiano", "flag": "🇮🇹", "built_at": "", "schema_version": 1},
-    {"lang": "por", "from_lang": "spa", "name": "Portugués", "flag": "🇧🇷", "built_at": "", "schema_version": 1},
-
-    {"lang": "eng", "from_lang": "deu", "name": "Englisch", "flag": "🇬🇧", "built_at": "", "schema_version": 1},
-    {"lang": "fra", "from_lang": "deu", "name": "Französisch", "flag": "🇫🇷", "built_at": "", "schema_version": 1},
-    {"lang": "spa", "from_lang": "deu", "name": "Spanisch", "flag": "🇪🇸", "built_at": "", "schema_version": 1},
-    {"lang": "ita", "from_lang": "deu", "name": "Italienisch", "flag": "🇮🇹", "built_at": "", "schema_version": 1},
-    {"lang": "por", "from_lang": "deu", "name": "Portugiesisch", "flag": "🇧🇷", "built_at": "", "schema_version": 1},
-
-    {"lang": "eng", "from_lang": "ita", "name": "Inglese", "flag": "🇬🇧", "built_at": "", "schema_version": 1},
-    {"lang": "fra", "from_lang": "ita", "name": "Francese", "flag": "🇫🇷", "built_at": "", "schema_version": 1},
-    {"lang": "spa", "from_lang": "ita", "name": "Spagnolo", "flag": "🇪🇸", "built_at": "", "schema_version": 1},
-    {"lang": "deu", "from_lang": "ita", "name": "Tedesco", "flag": "🇩🇪", "built_at": "", "schema_version": 1},
-    {"lang": "por", "from_lang": "ita", "name": "Portoghese", "flag": "🇧🇷", "built_at": "", "schema_version": 1},
-
-    {"lang": "eng", "from_lang": "por", "name": "Inglês", "flag": "🇬🇧", "built_at": "", "schema_version": 1},
-    {"lang": "fra", "from_lang": "por", "name": "Francês", "flag": "🇫🇷", "built_at": "", "schema_version": 1},
-    {"lang": "spa", "from_lang": "por", "name": "Espanhol", "flag": "🇪🇸", "built_at": "", "schema_version": 1},
-    {"lang": "deu", "from_lang": "por", "name": "Alemão", "flag": "🇩🇪", "built_at": "", "schema_version": 1},
-    {"lang": "ita", "from_lang": "por", "name": "Italiano", "flag": "🇮🇹", "built_at": "", "schema_version": 1}
+    {
+      "lang": "fra",
+      "from_lang": "eng",
+      "name": "French",
+      "flag": "🇫🇷",
+      "built_at": "2026-04-08T04:47:46.865433+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "spa",
+      "from_lang": "eng",
+      "name": "Spanish",
+      "flag": "🇪🇸",
+      "built_at": "2026-04-08T04:48:45.494171+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "deu",
+      "from_lang": "eng",
+      "name": "German",
+      "flag": "🇩🇪",
+      "built_at": "2026-04-08T04:49:50.162457+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "ita",
+      "from_lang": "eng",
+      "name": "Italian",
+      "flag": "🇮🇹",
+      "built_at": "2026-04-08T04:50:47.075723+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "por",
+      "from_lang": "eng",
+      "name": "Portuguese",
+      "flag": "🇧🇷",
+      "built_at": "2026-04-08T04:51:44.854834+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "eng",
+      "from_lang": "fra",
+      "name": "Anglais",
+      "flag": "🇬🇧",
+      "built_at": "2026-04-08T04:53:44.804403+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "spa",
+      "from_lang": "fra",
+      "name": "Espagnol",
+      "flag": "🇪🇸",
+      "built_at": "2026-04-08T04:54:36.951994+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "deu",
+      "from_lang": "fra",
+      "name": "Allemand",
+      "flag": "🇩🇪",
+      "built_at": "2026-04-08T04:55:43.107538+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "ita",
+      "from_lang": "fra",
+      "name": "Italien",
+      "flag": "🇮🇹",
+      "built_at": "2026-04-08T04:56:36.851876+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "por",
+      "from_lang": "fra",
+      "name": "Portugais",
+      "flag": "🇧🇷",
+      "built_at": "2026-04-08T04:57:10.440855+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "eng",
+      "from_lang": "spa",
+      "name": "Inglés",
+      "flag": "🇬🇧",
+      "built_at": "2026-04-08T04:58:31.930094+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "fra",
+      "from_lang": "spa",
+      "name": "Francés",
+      "flag": "🇫🇷",
+      "built_at": "2026-04-08T04:59:32.911441+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "deu",
+      "from_lang": "spa",
+      "name": "Alemán",
+      "flag": "🇩🇪",
+      "built_at": "2026-04-08T05:00:35.653668+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "ita",
+      "from_lang": "spa",
+      "name": "Italiano",
+      "flag": "🇮🇹",
+      "built_at": "2026-04-08T05:00:53.905156+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "por",
+      "from_lang": "spa",
+      "name": "Portugués",
+      "flag": "🇧🇷",
+      "built_at": "2026-04-08T05:01:51.916978+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "eng",
+      "from_lang": "deu",
+      "name": "Englisch",
+      "flag": "🇬🇧",
+      "built_at": "2026-04-08T05:03:24.868634+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "fra",
+      "from_lang": "deu",
+      "name": "Französisch",
+      "flag": "🇫🇷",
+      "built_at": "2026-04-08T05:04:28.435901+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "spa",
+      "from_lang": "deu",
+      "name": "Spanisch",
+      "flag": "🇪🇸",
+      "built_at": "2026-04-08T05:05:24.094640+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "ita",
+      "from_lang": "deu",
+      "name": "Italienisch",
+      "flag": "🇮🇹",
+      "built_at": "2026-04-08T05:05:52.029550+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "por",
+      "from_lang": "deu",
+      "name": "Portugiesisch",
+      "flag": "🇧🇷",
+      "built_at": "2026-04-08T05:06:18.107299+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "eng",
+      "from_lang": "ita",
+      "name": "Inglese",
+      "flag": "🇬🇧",
+      "built_at": "2026-04-08T05:07:55.791151+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "fra",
+      "from_lang": "ita",
+      "name": "Francese",
+      "flag": "🇫🇷",
+      "built_at": "2026-04-08T05:08:45.685734+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "spa",
+      "from_lang": "ita",
+      "name": "Spagnolo",
+      "flag": "🇪🇸",
+      "built_at": "2026-04-08T05:09:02.978464+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "deu",
+      "from_lang": "ita",
+      "name": "Tedesco",
+      "flag": "🇩🇪",
+      "built_at": "2026-04-08T05:09:30.885704+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "por",
+      "from_lang": "ita",
+      "name": "Portoghese",
+      "flag": "🇧🇷",
+      "built_at": "2026-04-08T05:09:46.543605+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "eng",
+      "from_lang": "por",
+      "name": "Inglês",
+      "flag": "🇬🇧",
+      "built_at": "2026-04-08T05:10:59.466023+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "fra",
+      "from_lang": "por",
+      "name": "Francês",
+      "flag": "🇫🇷",
+      "built_at": "2026-04-08T05:11:33.203888+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "spa",
+      "from_lang": "por",
+      "name": "Espanhol",
+      "flag": "🇪🇸",
+      "built_at": "2026-04-08T05:12:28.584495+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "deu",
+      "from_lang": "por",
+      "name": "Alemão",
+      "flag": "🇩🇪",
+      "built_at": "2026-04-08T05:12:52.310607+00:00",
+      "schema_version": 1
+    },
+    {
+      "lang": "ita",
+      "from_lang": "por",
+      "name": "Italiano",
+      "flag": "🇮🇹",
+      "built_at": "2026-04-08T05:13:06.264822+00:00",
+      "schema_version": 1
+    }
   ]
 }
