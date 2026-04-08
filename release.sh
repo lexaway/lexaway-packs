@@ -1,31 +1,51 @@
 #!/usr/bin/env bash
 #
-# Build all configured language packs and publish a GitHub release.
+# Build all cross-language packs and publish a GitHub release.
 #
 # Usage:
-#   ./release.sh              # build all languages, release
-#   ./release.sh fra spa      # build only these, release
-#   ./release.sh --skip-build # release existing packs without rebuilding
+#   ./release.sh                        # build all 30 pairs, release
+#   ./release.sh eng fra eng spa        # build only these pairs (from-lang target pairs)
+#   ./release.sh --skip-build           # release existing packs without rebuilding
 
 set -euo pipefail
 cd "$(dirname "$0")"
 
-LANGUAGES=(fra spa deu ita por)
+ALL_LANGS=(eng fra spa deu ita por)
 SKIP_BUILD=false
+PAIRS=()
 
 # Parse args
 if [[ "${1:-}" == "--skip-build" ]]; then
   SKIP_BUILD=true
   shift
 elif [[ $# -gt 0 ]]; then
-  LANGUAGES=("$@")
+  # Expect pairs as: from_lang1 lang1 from_lang2 lang2 ...
+  while [[ $# -ge 2 ]]; do
+    PAIRS+=("$1:$2")
+    shift 2
+  done
+  if [[ $# -gt 0 ]]; then
+    echo "Error: pairs must be specified as 'from_lang lang' (got odd number of args)" >&2
+    exit 1
+  fi
+fi
+
+# Default: all pairs (6 langs × 5 targets = 30)
+if [[ ${#PAIRS[@]} -eq 0 && "$SKIP_BUILD" == false ]]; then
+  for from in "${ALL_LANGS[@]}"; do
+    for to in "${ALL_LANGS[@]}"; do
+      [[ "$from" != "$to" ]] && PAIRS+=("$from:$to")
+    done
+  done
 fi
 
 # Build
 if [[ "$SKIP_BUILD" == false ]]; then
-  for lang in "${LANGUAGES[@]}"; do
-    echo "==> Building $lang..."
-    uv run python build.py --lang "$lang"
+  for pair in "${PAIRS[@]}"; do
+    from="${pair%%:*}"
+    to="${pair##*:}"
+    echo "==> Building $from→$to..."
+    uv run python build.py --from-lang "$from" --lang "$to"
     echo ""
   done
 fi

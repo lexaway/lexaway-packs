@@ -152,12 +152,24 @@ class TestUpdateManifest:
         Path("manifest.json").write_text(json.dumps(manifest))
 
         db_path = self._make_db(tmp_path, "2026-04-07T00:00:00+00:00", "1")
-        update_manifest("fra", db_path)
+        update_manifest("fra", "eng", db_path)
 
         result = json.loads(Path("manifest.json").read_text())
         pack = result["packs"][0]
         assert pack["built_at"] == "2026-04-07T00:00:00+00:00"
         assert pack["schema_version"] == 1
+
+    def test_does_not_match_different_from_lang(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        manifest = {
+            "schema_version": 1,
+            "packs": [{"lang": "fra", "from_lang": "eng", "name": "French", "flag": "F"}],
+        }
+        Path("manifest.json").write_text(json.dumps(manifest))
+
+        db_path = self._make_db(tmp_path, "2026-04-07T00:00:00+00:00", "1")
+        with pytest.raises(ValueError, match="No entry for 'spa→fra'"):
+            update_manifest("fra", "spa", db_path)
 
     def test_raises_when_lang_missing(self, tmp_path, monkeypatch):
         monkeypatch.chdir(tmp_path)
@@ -165,11 +177,11 @@ class TestUpdateManifest:
         Path("manifest.json").write_text(json.dumps(manifest))
 
         db_path = self._make_db(tmp_path, "2026-04-07T00:00:00+00:00", "1")
-        with pytest.raises(ValueError, match="No entry for 'fra'"):
-            update_manifest("fra", db_path)
+        with pytest.raises(ValueError, match="No entry for 'eng→fra'"):
+            update_manifest("fra", "eng", db_path)
 
     def test_raises_when_no_manifest(self, tmp_path, monkeypatch):
         monkeypatch.chdir(tmp_path)
         db_path = self._make_db(tmp_path, "2026-04-07T00:00:00+00:00", "1")
         with pytest.raises(FileNotFoundError):
-            update_manifest("fra", db_path)
+            update_manifest("fra", "eng", db_path)

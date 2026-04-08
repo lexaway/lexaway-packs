@@ -1,45 +1,40 @@
 {
   "schema_version": 1,
   "packs": [
-    {
-      "lang": "fra",
-      "from_lang": "eng",
-      "name": "French",
-      "flag": "🇫🇷",
-      "built_at": "2026-04-08T03:49:46.943563+00:00",
-      "schema_version": 1
-    },
-    {
-      "lang": "spa",
-      "from_lang": "eng",
-      "name": "Spanish",
-      "flag": "🇪🇸",
-      "built_at": "2026-04-08T03:49:51.862812+00:00",
-      "schema_version": 1
-    },
-    {
-      "lang": "deu",
-      "from_lang": "eng",
-      "name": "German",
-      "flag": "🇩🇪",
-      "built_at": "2026-04-08T03:51:02.095513+00:00",
-      "schema_version": 1
-    },
-    {
-      "lang": "ita",
-      "from_lang": "eng",
-      "name": "Italian",
-      "flag": "🇮🇹",
-      "built_at": "2026-04-08T03:52:03.330976+00:00",
-      "schema_version": 1
-    },
-    {
-      "lang": "por",
-      "from_lang": "eng",
-      "name": "Portuguese",
-      "flag": "🇧🇷",
-      "built_at": "2026-04-08T03:53:06.512302+00:00",
-      "schema_version": 1
-    }
+    {"lang": "fra", "from_lang": "eng", "name": "French", "flag": "🇫🇷", "built_at": "", "schema_version": 1},
+    {"lang": "spa", "from_lang": "eng", "name": "Spanish", "flag": "🇪🇸", "built_at": "", "schema_version": 1},
+    {"lang": "deu", "from_lang": "eng", "name": "German", "flag": "🇩🇪", "built_at": "", "schema_version": 1},
+    {"lang": "ita", "from_lang": "eng", "name": "Italian", "flag": "🇮🇹", "built_at": "", "schema_version": 1},
+    {"lang": "por", "from_lang": "eng", "name": "Portuguese", "flag": "🇧🇷", "built_at": "", "schema_version": 1},
+
+    {"lang": "eng", "from_lang": "fra", "name": "Anglais", "flag": "🇬🇧", "built_at": "", "schema_version": 1},
+    {"lang": "spa", "from_lang": "fra", "name": "Espagnol", "flag": "🇪🇸", "built_at": "", "schema_version": 1},
+    {"lang": "deu", "from_lang": "fra", "name": "Allemand", "flag": "🇩🇪", "built_at": "", "schema_version": 1},
+    {"lang": "ita", "from_lang": "fra", "name": "Italien", "flag": "🇮🇹", "built_at": "", "schema_version": 1},
+    {"lang": "por", "from_lang": "fra", "name": "Portugais", "flag": "🇧🇷", "built_at": "", "schema_version": 1},
+
+    {"lang": "eng", "from_lang": "spa", "name": "Inglés", "flag": "🇬🇧", "built_at": "", "schema_version": 1},
+    {"lang": "fra", "from_lang": "spa", "name": "Francés", "flag": "🇫🇷", "built_at": "", "schema_version": 1},
+    {"lang": "deu", "from_lang": "spa", "name": "Alemán", "flag": "🇩🇪", "built_at": "", "schema_version": 1},
+    {"lang": "ita", "from_lang": "spa", "name": "Italiano", "flag": "🇮🇹", "built_at": "", "schema_version": 1},
+    {"lang": "por", "from_lang": "spa", "name": "Portugués", "flag": "🇧🇷", "built_at": "", "schema_version": 1},
+
+    {"lang": "eng", "from_lang": "deu", "name": "Englisch", "flag": "🇬🇧", "built_at": "", "schema_version": 1},
+    {"lang": "fra", "from_lang": "deu", "name": "Französisch", "flag": "🇫🇷", "built_at": "", "schema_version": 1},
+    {"lang": "spa", "from_lang": "deu", "name": "Spanisch", "flag": "🇪🇸", "built_at": "", "schema_version": 1},
+    {"lang": "ita", "from_lang": "deu", "name": "Italienisch", "flag": "🇮🇹", "built_at": "", "schema_version": 1},
+    {"lang": "por", "from_lang": "deu", "name": "Portugiesisch", "flag": "🇧🇷", "built_at": "", "schema_version": 1},
+
+    {"lang": "eng", "from_lang": "ita", "name": "Inglese", "flag": "🇬🇧", "built_at": "", "schema_version": 1},
+    {"lang": "fra", "from_lang": "ita", "name": "Francese", "flag": "🇫🇷", "built_at": "", "schema_version": 1},
+    {"lang": "spa", "from_lang": "ita", "name": "Spagnolo", "flag": "🇪🇸", "built_at": "", "schema_version": 1},
+    {"lang": "deu", "from_lang": "ita", "name": "Tedesco", "flag": "🇩🇪", "built_at": "", "schema_version": 1},
+    {"lang": "por", "from_lang": "ita", "name": "Portoghese", "flag": "🇧🇷", "built_at": "", "schema_version": 1},
+
+    {"lang": "eng", "from_lang": "por", "name": "Inglês", "flag": "🇬🇧", "built_at": "", "schema_version": 1},
+    {"lang": "fra", "from_lang": "por", "name": "Francês", "flag": "🇫🇷", "built_at": "", "schema_version": 1},
+    {"lang": "spa", "from_lang": "por", "name": "Espanhol", "flag": "🇪🇸", "built_at": "", "schema_version": 1},
+    {"lang": "deu", "from_lang": "por", "name": "Alemão", "flag": "🇩🇪", "built_at": "", "schema_version": 1},
+    {"lang": "ita", "from_lang": "por", "name": "Italiano", "flag": "🇮🇹", "built_at": "", "schema_version": 1}
   ]
 }

@@ -4,8 +4,9 @@ Downloads Tatoeba sentence pairs, POS-tags them with spaCy,
 generates fill-in-the-blank questions, and writes a SQLite pack.
 
 Usage:
-    uv run build --lang fra
-    uv run build --lang fra --force
+    uv run python build.py --lang fra
+    uv run python build.py --from-lang spa --lang fra
+    uv run python build.py --lang fra --force
 """
 
 import argparse
@@ -44,6 +45,7 @@ TOM_MARY_CAP = 0.03
 TOM_MARY_RE = re.compile(r"\bTom\b|\bMary\b")
 
 SPACY_MODELS = {
+    "eng": "en_core_web_md",
     "fra": "fr_core_news_md",
     "spa": "es_core_news_md",
     "deu": "de_core_news_md",
@@ -84,14 +86,14 @@ def download_file(url: str, dest: Path) -> None:
             print()
 
 
-def ensure_downloads(lang: str) -> None:
+def ensure_downloads(lang: str, from_lang: str) -> None:
     """Download Tatoeba files if missing."""
     DATA_DIR.mkdir(exist_ok=True)
 
     files = {
         f"{lang}_sentences.tsv.bz2": f"{TATOEBA_BASE}/{lang}/{lang}_sentences.tsv.bz2",
-        "eng_sentences.tsv.bz2": f"{TATOEBA_BASE}/eng/eng_sentences.tsv.bz2",
-        f"{lang}-eng_links.tsv.bz2": f"{TATOEBA_BASE}/{lang}/{lang}-eng_links.tsv.bz2",
+        f"{from_lang}_sentences.tsv.bz2": f"{TATOEBA_BASE}/{from_lang}/{from_lang}_sentences.tsv.bz2",
+        f"{lang}-{from_lang}_links.tsv.bz2": f"{TATOEBA_BASE}/{lang}/{lang}-{from_lang}_links.tsv.bz2",
         f"{lang}_tags.tsv.bz2": f"{TATOEBA_BASE}/{lang}/{lang}_tags.tsv.bz2",
     }
 
@@ -130,7 +132,7 @@ def load_excluded_ids(tags_path: Path) -> set[str]:
 
 
 def load_pairs(
-    lang: str, excluded: set[str]
+    lang: str, from_lang: str, excluded: set[str]
 ) -> list[tuple[str, str, str]]:
     """Load filtered sentence pairs: (source_id, phrase, translation).
 
@@ -138,20 +140,20 @@ def load_pairs(
     Samples down to TARGET_SENTENCES.
     """
     lang_sents = load_sentences(DATA_DIR / f"{lang}_sentences.tsv.bz2")
-    eng_sents = load_sentences(DATA_DIR / "eng_sentences.tsv.bz2")
+    from_sents = load_sentences(DATA_DIR / f"{from_lang}_sentences.tsv.bz2")
 
     pairs = []
-    with bz2.open(DATA_DIR / f"{lang}-eng_links.tsv.bz2", "rt") as f:
+    with bz2.open(DATA_DIR / f"{lang}-{from_lang}_links.tsv.bz2", "rt") as f:
         for line in f:
-            lang_id, eng_id = line.strip().split("\t")
+            lang_id, from_id = line.strip().split("\t")
             if lang_id in excluded:
                 continue
-            if lang_id not in lang_sents or eng_id not in eng_sents:
+            if lang_id not in lang_sents or from_id not in from_sents:
                 continue
             text = lang_sents[lang_id]
             wc = len(text.split())
             if 4 <= wc <= 20:
-                pairs.append((lang_id, text, eng_sents[eng_id]))
+                pairs.append((lang_id, text, from_sents[from_id]))
 
     # Deduplicate by source_id (links file can have multiple English translations)
     seen = set()
@@ -182,11 +184,11 @@ def load_pairs(
 # Stage 1: Tag & Checkpoint
 # ---------------------------------------------------------------------------
 
-def checkpoint_path(lang: str) -> Path:
-    return CACHE_DIR / f"{lang}_tagged.jsonl"
+def checkpoint_path(from_lang: str, lang: str) -> Path:
+    return CACHE_DIR / f"{from_lang}-{lang}_tagged.jsonl"
 
 
-def tag_and_checkpoint(pairs: list[tuple[str, str, str]], lang: str) -> None:
+def tag_and_checkpoint(pairs: list[tuple[str, str, str]], lang: str, from_lang: str) -> None:
     """POS-tag all pairs with spaCy, write JSONL checkpoint."""
     import spacy
 
@@ -198,7 +200,7 @@ def tag_and_checkpoint(pairs: list[tuple[str, str, str]], lang: str) -> None:
     nlp = spacy.load(model_name)
 
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
-    out_path = checkpoint_path(lang)
+    out_path = checkpoint_path(from_lang, lang)
 
     print(f"Tagging {len(pairs):,} sentences...")
     t0 = time.time()
@@ -225,10 +227,10 @@ def tag_and_checkpoint(pairs: list[tuple[str, str, str]], lang: str) -> None:
     print(f"  Done in {elapsed:.0f}s ({len(pairs) / elapsed:.0f} sent/s)")
 
 
-def load_checkpoint(lang: str) -> list[dict]:
+def load_checkpoint(from_lang: str, lang: str) -> list[dict]:
     """Read JSONL checkpoint."""
     tagged = []
-    with open(checkpoint_path(lang)) as f:
+    with open(checkpoint_path(from_lang, lang)) as f:
         for line in f:
             tagged.append(json.loads(line))
     return tagged
@@ -343,6 +345,7 @@ def write_database(
     cefr_lookup: dict[str, str],
     stops: set[str],
     lang: str,
+    from_lang: str,
     output_path: Path,
 ) -> None:
     """Build the SQLite language pack."""
@@ -423,6 +426,10 @@ def write_database(
     )
     conn.execute(
         "INSERT INTO meta (key, value) VALUES (?, ?)",
+        ("from_language", from_lang),
+    )
+    conn.execute(
+        "INSERT INTO meta (key, value) VALUES (?, ?)",
         ("built_at", datetime.now(timezone.utc).isoformat()),
     )
     conn.execute(
@@ -480,7 +487,7 @@ def write_database(
 # Main
 # ---------------------------------------------------------------------------
 
-def update_manifest(lang: str, db_path: Path) -> None:
+def update_manifest(lang: str, from_lang: str, db_path: Path) -> None:
     """Read built_at and schema_version from the pack DB and upsert into manifest.json."""
     conn = sqlite3.connect(db_path)
     meta = {row[0]: row[1] for row in conn.execute("SELECT key, value FROM meta")}
@@ -489,51 +496,56 @@ def update_manifest(lang: str, db_path: Path) -> None:
     manifest_path = Path("manifest.json")
     manifest = json.loads(manifest_path.read_text())
 
-    pack_entry = next((p for p in manifest["packs"] if p["lang"] == lang), None)
+    pack_entry = next(
+        (p for p in manifest["packs"] if p["lang"] == lang and p["from_lang"] == from_lang),
+        None,
+    )
     if pack_entry is None:
         raise ValueError(
-            f"No entry for '{lang}' in manifest.json — add one with name/flag/from_lang first"
+            f"No entry for '{from_lang}→{lang}' in manifest.json — add one with name/flag first"
         )
 
     pack_entry["built_at"] = meta["built_at"]
     pack_entry["schema_version"] = int(meta["schema_version"])
 
     manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n")
-    print(f"\n  Updated manifest.json for {lang}")
+    print(f"\n  Updated manifest.json for {from_lang}→{lang}")
 
 
 def main():
     parser = argparse.ArgumentParser(description="Build a Lexaway language pack")
-    parser.add_argument("--lang", required=True, help="ISO 639-3 language code (e.g. fra)")
+    parser.add_argument("--lang", required=True, help="Target language ISO 639-3 code (e.g. fra)")
+    parser.add_argument("--from-lang", default="eng", help="Source language ISO 639-3 code (default: eng)")
     parser.add_argument("--force", action="store_true", help="Rebuild from scratch")
     args = parser.parse_args()
 
     lang = args.lang
-    print(f"\n  Building language pack: {lang}\n")
+    from_lang = args.from_lang
+    print(f"\n  Building language pack: {from_lang}→{lang}\n")
 
     # Download
     print("Step 1: Ensure data files...")
-    ensure_downloads(lang)
+    ensure_downloads(lang, from_lang)
 
     # Load & filter
     print("Step 2: Loading and filtering pairs...")
     excluded = load_excluded_ids(DATA_DIR / f"{lang}_tags.tsv.bz2")
     print(f"  {len(excluded):,} sentences excluded by tags")
 
-    pairs = load_pairs(lang, excluded)
+    pairs = load_pairs(lang, from_lang, excluded)
     print(f"  {len(pairs):,} pairs after filtering")
 
     # Stage 1: Tag
-    cp = checkpoint_path(lang)
+    cp = checkpoint_path(from_lang, lang)
     if cp.exists() and not args.force:
         print(f"Step 3: Checkpoint found ({cp}), skipping tagging")
     else:
         print("Step 3: POS tagging...")
-        tag_and_checkpoint(pairs, lang)
+        tag_and_checkpoint(pairs, lang, from_lang)
 
     # Stage 2: Build
     print("Step 4: Loading checkpoint...")
-    tagged = load_checkpoint(lang)
+    tagged = load_checkpoint(from_lang, lang)
     print(f"  {len(tagged):,} tagged sentences")
 
     print("Step 5: Building distractor pools...")
@@ -549,11 +561,11 @@ def main():
     print(f"  {len(cefr_lookup):,} words with CEFR levels")
 
     print("Step 7: Building database...")
-    output_path = PACKS_DIR / f"{lang}.db"
-    write_database(tagged, pools, cefr_lookup, nlp_stops, lang, output_path)
+    output_path = PACKS_DIR / f"{from_lang}-{lang}.db"
+    write_database(tagged, pools, cefr_lookup, nlp_stops, lang, from_lang, output_path)
 
     print("Step 8: Updating manifest...")
-    update_manifest(lang, output_path)
+    update_manifest(lang, from_lang, output_path)
 
 
 if __name__ == "__main__":
