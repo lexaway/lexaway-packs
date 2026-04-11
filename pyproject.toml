@@ -6,6 +6,9 @@ requires-python = ">=3.13"
 dependencies = [
     "httpx",
     "spacy>=3.8",
+    "simalign",
+    "torch",
+    "transformers",
 ]
 
 [dependency-groups]

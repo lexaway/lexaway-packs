@@ -64,6 +64,33 @@ CEFR_TO_LEVEL = {
     "C1": "advanced", "C2": "advanced",
 }
 
+# Word-level translation tooltips (lexaway#12).
+# SimAlign gives us (source_idx, target_idx) pairs. We compute "content-word
+# coverage" — the share of target-side content words that received any
+# alignment — and suppress the whole phrase's tooltips if it falls below
+# COVERAGE_THRESHOLD. Paraphrased pairs produce no tooltips at all rather
+# than misleading ones.
+#
+# Threshold derived from scratch/explore_simalign_coverage.py: on a 500-pair
+# eng-fra sample, <60% catches the clean paraphrase/idiom cases while leaving
+# the 70–90% "literal with mild rephrasing" band alone (~6.6% suppression).
+CONTENT_POS = {"NOUN", "VERB", "ADJ", "ADV", "PROPN"}
+COVERAGE_THRESHOLD = 0.60
+
+# Some content-POS-tagged tokens are actually grammatical particles that
+# SimAlign has no reason to align (French "ne", Italian "non", etc.). Left in
+# the denominator they inflate "missed content word" counts on short negated
+# sentences and push them below threshold for the wrong reason.
+# Keyed by TARGET language (the side whose coverage we measure).
+CONTENT_WORD_STOPS: dict[str, set[str]] = {
+    "fra": {"ne", "pas", "plus", "jamais", "rien", "personne", "y", "en", "ni", "que"},
+    "ita": {"non", "ci", "ne", "si", "ma"},
+    "spa": {"no", "se", "me", "te", "le", "les", "lo"},
+    "por": {"não", "nao", "se", "me", "te", "lhe"},
+    "deu": {"nicht", "kein", "keine", "ja", "doch", "mal", "nur"},
+    "eng": {"not", "n't"},
+}
+
 # ---------------------------------------------------------------------------
 # Download
 # ---------------------------------------------------------------------------
@@ -237,7 +264,135 @@ def load_checkpoint(from_lang: str, lang: str) -> list[dict]:
 
 
 # ---------------------------------------------------------------------------
-# Stage 2: Build
+# Stage 2: Align (SimAlign → word-level translation tooltips)
+# ---------------------------------------------------------------------------
+
+def aligned_checkpoint_path(from_lang: str, lang: str) -> Path:
+    return CACHE_DIR / f"{from_lang}-{lang}_aligned.jsonl"
+
+
+def content_word_coverage(
+    tgt_tokens: list[list],
+    alignments: list[tuple[int, int]],
+    content_stops: set[str],
+) -> tuple[float, int]:
+    """Fraction of content-word target tokens that received any alignment.
+
+    tgt_tokens is the checkpoint format [[text, pos, char_idx], ...].
+    alignments is a list of (source_idx, target_idx) pairs from SimAlign.
+    content_stops is a set of target-language grammatical-particle lemmas
+    tagged as content-POS but ignored for coverage (e.g. French "ne", "pas").
+
+    Returns (coverage, content_count). coverage is 1.0 when there are no
+    content words — a harmless default that lets such sentences pass through
+    the suppression threshold.
+    """
+    content_idxs = {
+        i for i, (text, pos, _idx) in enumerate(tgt_tokens)
+        if pos in CONTENT_POS and text.lower() not in content_stops
+    }
+    if not content_idxs:
+        return 1.0, 0
+    aligned_tgt = {t for _s, t in alignments}
+    return len(content_idxs & aligned_tgt) / len(content_idxs), len(content_idxs)
+
+
+def align_and_checkpoint(
+    tagged: list[dict], lang: str, from_lang: str
+) -> None:
+    """Tokenize the source side, run SimAlign, suppress low-coverage pairs,
+    write an aligned JSONL checkpoint."""
+    import spacy
+    from simalign import SentenceAligner  # type: ignore
+
+    src_model = SPACY_MODELS.get(from_lang)
+    if not src_model:
+        raise ValueError(f"No spaCy model configured for source language: {from_lang}")
+
+    print(f"Loading source spaCy model {src_model}...")
+    nlp_src = spacy.load(src_model, disable=["parser", "ner"])
+
+    print("Loading SimAlign (mBERT)... (first run downloads ~700 MB)")
+    aligner = SentenceAligner(
+        model="bert",
+        token_type="bpe",
+        matching_methods="a",  # "a" produces the `inter` (argmax intersection) key
+    )
+
+    content_stops = CONTENT_WORD_STOPS.get(lang, set())
+    out_path = aligned_checkpoint_path(from_lang, lang)
+    # Write to a .tmp file and rename on success, so an interrupted run
+    # (Ctrl-C or kill) doesn't leave a partial checkpoint that a later run
+    # mistakes for complete.
+    tmp_path = out_path.with_suffix(out_path.suffix + ".tmp")
+    n = len(tagged)
+    suppressed = 0
+
+    print(f"Aligning {n:,} sentences...")
+    t0 = time.time()
+
+    with open(tmp_path, "w") as f:
+        for i, entry in enumerate(tagged):
+            # Source-side tokens: spaCy on the raw translation string. Drop
+            # whitespace tokens so indices line up with SimAlign output.
+            src_doc = nlp_src(entry["translation"])
+            src_tokens = [[t.text, t.idx] for t in src_doc if not t.is_space]
+            src_toks_text = [t[0] for t in src_tokens]
+            tgt_toks_text = [t[0] for t in entry["tokens"]]
+
+            if src_toks_text and tgt_toks_text:
+                result = aligner.get_word_aligns(src_toks_text, tgt_toks_text)
+                inter = result.get("inter", [])
+            else:
+                inter = []
+
+            coverage, _ = content_word_coverage(
+                entry["tokens"], inter, content_stops
+            )
+
+            if coverage < COVERAGE_THRESHOLD:
+                alignments = None
+                suppressed += 1
+            else:
+                alignments = [[int(s), int(t)] for s, t in inter]
+
+            out = {
+                **entry,
+                "src_tokens": src_tokens,
+                "alignments": alignments,
+            }
+            f.write(json.dumps(out) + "\n")
+
+            if (i + 1) % 500 == 0:
+                elapsed = time.time() - t0
+                rate = (i + 1) / elapsed
+                remain = (n - i - 1) / rate
+                print(
+                    f"  {i + 1:,}/{n:,} "
+                    f"({rate:.1f} sent/s, ~{remain/60:.1f} min left)"
+                )
+
+    tmp_path.replace(out_path)
+
+    elapsed = time.time() - t0
+    print(f"  Done in {elapsed/60:.1f} min ({n/elapsed:.1f} sent/s)")
+    print(
+        f"  Suppressed: {suppressed:,}/{n:,} ({suppressed/n:.1%}) "
+        f"below {COVERAGE_THRESHOLD:.0%} coverage"
+    )
+
+
+def load_aligned_checkpoint(from_lang: str, lang: str) -> list[dict]:
+    """Read the aligned JSONL checkpoint."""
+    aligned = []
+    with open(aligned_checkpoint_path(from_lang, lang)) as f:
+        for line in f:
+            aligned.append(json.loads(line))
+    return aligned
+
+
+# ---------------------------------------------------------------------------
+# Stage 3: Build
 # ---------------------------------------------------------------------------
 
 def build_distractor_pools(
@@ -339,8 +494,49 @@ def get_difficulty(
     return "advanced", None
 
 
+def token_offsets(tokens: list[list], text: str) -> list[list[int]]:
+    """Convert checkpoint tokens ([text, ...rest, char_idx]) → [[start, end], ...].
+
+    Accepts both target-side tokens ([text, pos, char_idx]) and source-side
+    tokens ([text, char_idx]). End is derived in codepoints; the raw `text`
+    argument is unused but kept for symmetry/future sanity checks.
+    """
+    del text  # reserved for future assertions
+    offsets = []
+    for tok in tokens:
+        tok_text = tok[0]
+        char_idx = tok[-1]
+        offsets.append([char_idx, char_idx + len(tok_text)])
+    return offsets
+
+
+# Compact encoding for token offsets and alignments. Both are lists of
+# integer pairs — offsets as [[start, end], ...] and alignments as
+# [[src_idx, tgt_idx], ...] — and we store both as flat CSV: the ints
+# flattened and comma-joined. On the eng-fra pack this is ~45% smaller than
+# JSON across the three tooltip columns, one format to parse on the Dart
+# side, and rows stay inspectable in a sqlite browser ("0,2,3,8,9,12" is
+# directly readable as start/end positions).
+
+def encode_int_pairs(pairs: list[list[int]] | list[tuple[int, int]]) -> str:
+    """Flat CSV encoding of a list of integer pairs."""
+    return ",".join(str(n) for p in pairs for n in p)
+
+
+def decode_int_pairs(s: str) -> list[list[int]]:
+    """Inverse of encode_int_pairs."""
+    if not s:
+        return []
+    nums = [int(x) for x in s.split(",")]
+    if len(nums) % 2 != 0:
+        raise ValueError(
+            f"encode_int_pairs expects even number of ints, got {len(nums)}"
+        )
+    return [[nums[i], nums[i + 1]] for i in range(0, len(nums), 2)]
+
+
 def write_database(
-    tagged: list[dict],
+    aligned: list[dict],
     pools: dict[str, list[str]],
     cefr_lookup: dict[str, str],
     stops: set[str],
@@ -366,6 +562,9 @@ def write_database(
             level TEXT NOT NULL,
             cefr TEXT,
             topic TEXT,
+            phrase_tokens TEXT NOT NULL,
+            translation_tokens TEXT NOT NULL,
+            alignments TEXT,
             easiness REAL NOT NULL DEFAULT 2.5,
             interval_days INTEGER NOT NULL DEFAULT 0,
             repetitions INTEGER NOT NULL DEFAULT 0,
@@ -382,8 +581,9 @@ def write_database(
     random.seed(42)
     questions = []
     skipped = 0
+    suppressed_alignments = 0
 
-    for entry in tagged:
+    for entry in aligned:
         blank = pick_blank(entry["tokens"], stops)
         if blank is None:
             skipped += 1
@@ -400,6 +600,18 @@ def write_database(
 
         level, cefr = get_difficulty(text, cefr_lookup)
 
+        phrase_offsets = token_offsets(entry["tokens"], entry["phrase"])
+        translation_offsets = token_offsets(
+            entry["src_tokens"], entry["translation"]
+        )
+        alignments_str = (
+            encode_int_pairs(entry["alignments"])
+            if entry.get("alignments") is not None
+            else None
+        )
+        if alignments_str is None:
+            suppressed_alignments += 1
+
         questions.append((
             entry["source_id"],
             entry["phrase"],
@@ -411,12 +623,16 @@ def write_database(
             level,
             cefr,
             None,  # topic — NULL for MVP
+            encode_int_pairs(phrase_offsets),
+            encode_int_pairs(translation_offsets),
+            alignments_str,
         ))
 
     conn.executemany(
         "INSERT INTO phrases (source_id, phrase, translation, blank_index, "
-        "answer, answer_pos, options, level, cefr, topic) "
-        "VALUES (?,?,?,?,?,?,?,?,?,?)",
+        "answer, answer_pos, options, level, cefr, topic, "
+        "phrase_tokens, translation_tokens, alignments) "
+        "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
         questions,
     )
 
@@ -444,7 +660,7 @@ def write_database(
     )
     conn.execute(
         "INSERT INTO meta (key, value) VALUES (?, ?)",
-        ("schema_version", "1"),
+        ("schema_version", "2"),
     )
 
     conn.commit()
@@ -453,7 +669,10 @@ def write_database(
     size_kb = output_path.stat().st_size / 1024
     print(f"\n{'='*60}")
     print(f"  {output_path} ({size_kb:.0f} KB)")
-    print(f"  {len(questions):,} questions from {len(tagged):,} sentences ({skipped:,} skipped)")
+    print(f"  {len(questions):,} questions from {len(aligned):,} sentences ({skipped:,} skipped)")
+    if questions:
+        pct = suppressed_alignments / len(questions)
+        print(f"  {suppressed_alignments:,} phrases ({pct:.1%}) with suppressed alignments (paraphrase/low coverage)")
 
     print(f"\n  By level:")
     for row in conn.execute("SELECT level, count(*) FROM phrases GROUP BY level ORDER BY count(*) DESC"):
@@ -538,33 +757,44 @@ def main():
     # Stage 1: Tag
     cp = checkpoint_path(from_lang, lang)
     if cp.exists() and not args.force:
-        print(f"Step 3: Checkpoint found ({cp}), skipping tagging")
+        print(f"Step 3: Tag checkpoint found ({cp}), skipping tagging")
     else:
         print("Step 3: POS tagging...")
         tag_and_checkpoint(pairs, lang, from_lang)
 
-    # Stage 2: Build
-    print("Step 4: Loading checkpoint...")
-    tagged = load_checkpoint(from_lang, lang)
-    print(f"  {len(tagged):,} tagged sentences")
+    # Stage 2: Align (SimAlign)
+    aligned_cp = aligned_checkpoint_path(from_lang, lang)
+    if aligned_cp.exists() and not args.force:
+        print(f"Step 4: Align checkpoint found ({aligned_cp}), skipping alignment")
+    else:
+        print("Step 4: Loading tag checkpoint for alignment...")
+        tagged = load_checkpoint(from_lang, lang)
+        print(f"  {len(tagged):,} tagged sentences")
+        print("Step 5: Running SimAlign...")
+        align_and_checkpoint(tagged, lang, from_lang)
 
-    print("Step 5: Building distractor pools...")
+    # Stage 3: Build
+    print("Step 6: Loading align checkpoint...")
+    aligned = load_aligned_checkpoint(from_lang, lang)
+    print(f"  {len(aligned):,} aligned sentences")
+
+    print("Step 7: Building distractor pools...")
     import spacy
     spacy_lang = SPACY_MODELS[lang].split("_")[0]  # "fr", "es", etc.
     nlp_stops = spacy.blank(spacy_lang).Defaults.stop_words
-    pools = build_distractor_pools(tagged, nlp_stops)
+    pools = build_distractor_pools(aligned, nlp_stops)
     for pos, words in sorted(pools.items(), key=lambda x: -len(x[1])):
         print(f"  {pos}: {len(words)} words")
 
-    print("Step 6: Loading CEFRLex...")
+    print("Step 8: Loading CEFRLex...")
     cefr_lookup = load_cefr(lang)
     print(f"  {len(cefr_lookup):,} words with CEFR levels")
 
-    print("Step 7: Building database...")
+    print("Step 9: Building database...")
     output_path = PACKS_DIR / f"{from_lang}-{lang}.db"
-    write_database(tagged, pools, cefr_lookup, nlp_stops, lang, from_lang, output_path)
+    write_database(aligned, pools, cefr_lookup, nlp_stops, lang, from_lang, output_path)
 
-    print("Step 8: Updating manifest...")
+    print("Step 10: Updating manifest...")
     update_manifest(lang, from_lang, output_path)
 
 
