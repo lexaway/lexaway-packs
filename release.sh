@@ -50,6 +50,10 @@ if [[ "$SKIP_BUILD" == false ]]; then
   done
 fi
 
+# Refresh voice catalog in manifest.json (idempotent)
+echo "==> Updating voice catalog in manifest..."
+uv run python update_voices.py
+
 # Collect assets
 assets=()
 for db in packs/*.db; do

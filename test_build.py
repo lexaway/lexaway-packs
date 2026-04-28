@@ -7,6 +7,8 @@ from pathlib import Path
 import pytest
 
 from build import pick_blank, pick_distractors, get_difficulty, update_manifest
+from update_voices import inject_voices
+from voices import VOICES
 
 
 STOPS = {"je", "tu", "il", "de", "le", "la", "se", "en", "au", "du", "ce", "un", "une"}
@@ -185,3 +187,40 @@ class TestUpdateManifest:
         db_path = self._make_db(tmp_path, "2026-04-07T00:00:00+00:00", "1")
         with pytest.raises(FileNotFoundError):
             update_manifest("fra", "eng", db_path)
+
+
+class TestInjectVoices:
+    REQUIRED_KEYS = {
+        "model_id", "display_name", "archive_name", "onnx_file", "approximate_size_mb",
+    }
+
+    def test_writes_voices_block(self, tmp_path):
+        manifest_path = tmp_path / "manifest.json"
+        manifest_path.write_text(json.dumps({"schema_version": 1, "packs": []}))
+        inject_voices(manifest_path)
+        result = json.loads(manifest_path.read_text())
+        assert result["voices"] == VOICES
+        assert result["packs"] == []
+        assert result["schema_version"] == 1
+
+    def test_overwrites_existing_voices(self, tmp_path):
+        manifest_path = tmp_path / "manifest.json"
+        manifest_path.write_text(json.dumps({
+            "schema_version": 1,
+            "packs": [],
+            "voices": {"xxx": [{"stale": True}]},
+        }))
+        inject_voices(manifest_path)
+        result = json.loads(manifest_path.read_text())
+        assert result["voices"] == VOICES
+
+    def test_catalog_entries_are_well_formed(self):
+        for lang, models in VOICES.items():
+            assert isinstance(lang, str) and len(lang) == 3, lang
+            assert isinstance(models, list) and models, lang
+            ids = set()
+            for m in models:
+                assert set(m.keys()) == self.REQUIRED_KEYS, m
+                assert isinstance(m["approximate_size_mb"], int)
+                assert m["model_id"] not in ids, f"duplicate model_id in {lang}"
+                ids.add(m["model_id"])
