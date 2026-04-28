@@ -41,4 +41,9 @@ VOICES: dict[str, list[dict]] = {
         {"model_id": "cadu", "display_name": "Cadu", "archive_name": "vits-piper-pt_BR-cadu-medium", "onnx_file": "pt_BR-cadu-medium.onnx", "approximate_size_mb": 61},
         {"model_id": "edresson", "display_name": "Edresson", "archive_name": "vits-piper-pt_BR-edresson-low", "onnx_file": "pt_BR-edresson-low.onnx", "approximate_size_mb": 16},
     ],
+    "nld": [
+        {"model_id": "pim", "display_name": "Pim", "archive_name": "vits-piper-nl_NL-pim-medium", "onnx_file": "nl_NL-pim-medium.onnx", "approximate_size_mb": 61},
+        {"model_id": "ronnie", "display_name": "Ronnie", "archive_name": "vits-piper-nl_NL-ronnie-medium", "onnx_file": "nl_NL-ronnie-medium.onnx", "approximate_size_mb": 61},
+        {"model_id": "nathalie", "display_name": "Nathalie (BE)", "archive_name": "vits-piper-nl_BE-nathalie-medium", "onnx_file": "nl_BE-nathalie-medium.onnx", "approximate_size_mb": 61},
+    ],
 }

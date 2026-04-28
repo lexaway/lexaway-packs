@@ -51,6 +51,7 @@ SPACY_MODELS = {
     "deu": "de_core_news_md",
     "ita": "it_core_news_md",
     "por": "pt_core_news_md",
+    "nld": "nl_core_news_md",
 }
 
 CEFRLEX_FILES = {

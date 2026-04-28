@@ -240,6 +240,78 @@
       "flag": "🇮🇹",
       "built_at": "2026-04-08T05:13:06.264822+00:00",
       "schema_version": 1
+    },
+    {
+      "lang": "nld",
+      "from_lang": "eng",
+      "name": "Dutch",
+      "flag": "🇳🇱"
+    },
+    {
+      "lang": "nld",
+      "from_lang": "fra",
+      "name": "Néerlandais",
+      "flag": "🇳🇱"
+    },
+    {
+      "lang": "nld",
+      "from_lang": "spa",
+      "name": "Neerlandés",
+      "flag": "🇳🇱"
+    },
+    {
+      "lang": "nld",
+      "from_lang": "deu",
+      "name": "Niederländisch",
+      "flag": "🇳🇱"
+    },
+    {
+      "lang": "nld",
+      "from_lang": "ita",
+      "name": "Olandese",
+      "flag": "🇳🇱"
+    },
+    {
+      "lang": "nld",
+      "from_lang": "por",
+      "name": "Holandês",
+      "flag": "🇳🇱"
+    },
+    {
+      "lang": "eng",
+      "from_lang": "nld",
+      "name": "Engels",
+      "flag": "🇬🇧"
+    },
+    {
+      "lang": "fra",
+      "from_lang": "nld",
+      "name": "Frans",
+      "flag": "🇫🇷"
+    },
+    {
+      "lang": "spa",
+      "from_lang": "nld",
+      "name": "Spaans",
+      "flag": "🇪🇸"
+    },
+    {
+      "lang": "deu",
+      "from_lang": "nld",
+      "name": "Duits",
+      "flag": "🇩🇪"
+    },
+    {
+      "lang": "ita",
+      "from_lang": "nld",
+      "name": "Italiaans",
+      "flag": "🇮🇹"
+    },
+    {
+      "lang": "por",
+      "from_lang": "nld",
+      "name": "Portugees",
+      "flag": "🇧🇷"
     }
   ],
   "voices": {
@@ -393,6 +465,29 @@
         "archive_name": "vits-piper-pt_BR-edresson-low",
         "onnx_file": "pt_BR-edresson-low.onnx",
         "approximate_size_mb": 16
+      }
+    ],
+    "nld": [
+      {
+        "model_id": "pim",
+        "display_name": "Pim",
+        "archive_name": "vits-piper-nl_NL-pim-medium",
+        "onnx_file": "nl_NL-pim-medium.onnx",
+        "approximate_size_mb": 61
+      },
+      {
+        "model_id": "ronnie",
+        "display_name": "Ronnie",
+        "archive_name": "vits-piper-nl_NL-ronnie-medium",
+        "onnx_file": "nl_NL-ronnie-medium.onnx",
+        "approximate_size_mb": 61
+      },
+      {
+        "model_id": "nathalie",
+        "display_name": "Nathalie (BE)",
+        "archive_name": "vits-piper-nl_BE-nathalie-medium",
+        "onnx_file": "nl_BE-nathalie-medium.onnx",
+        "approximate_size_mb": 61
       }
     ]
   }
