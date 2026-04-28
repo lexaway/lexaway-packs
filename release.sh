@@ -3,14 +3,14 @@
 # Build all cross-language packs and publish a GitHub release.
 #
 # Usage:
-#   ./release.sh                        # build all 30 pairs, release
+#   ./release.sh                        # build all 42 pairs, release
 #   ./release.sh eng fra eng spa        # build only these pairs (from-lang target pairs)
 #   ./release.sh --skip-build           # release existing packs without rebuilding
 
 set -euo pipefail
 cd "$(dirname "$0")"
 
-ALL_LANGS=(eng fra spa deu ita por)
+ALL_LANGS=(eng fra spa deu ita por nld)
 SKIP_BUILD=false
 PAIRS=()
 
