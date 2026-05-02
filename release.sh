@@ -48,6 +48,11 @@ if [[ "$SKIP_BUILD" == false ]]; then
     uv run python build.py --from-lang "$from" --lang "$to"
     echo ""
   done
+
+  # Build music packs (idempotent — produces deterministic archives) and
+  # refresh the `music` block in manifest.json.
+  echo "==> Building music packs..."
+  uv run python build_music.py
 fi
 
 # Refresh voice catalog in manifest.json (idempotent)
@@ -58,6 +63,9 @@ uv run python update_voices.py
 assets=()
 for db in packs/*.db; do
   [[ -f "$db" ]] && assets+=("$db")
+done
+for tar in music/*.tar.bz2; do
+  [[ -f "$tar" ]] && assets+=("$tar")
 done
 assets+=("manifest.json")
 

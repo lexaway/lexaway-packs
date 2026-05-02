@@ -16,6 +16,9 @@ wheels/
 # Pipeline data and output
 data/
 packs/
+# Music pack source files and built archives — large binaries that live with
+# the release artifacts, not in git.
+music/
 
 # Exploration / scratch scripts
 scratch/

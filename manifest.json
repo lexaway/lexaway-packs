@@ -514,5 +514,530 @@
         "approximate_size_mb": 61
       }
     ]
-  }
+  },
+  "music": [
+    {
+      "id": "towballs_crossing_deluxe",
+      "display_name": "Towball's Crossing Deluxe",
+      "archive_name": "music-towballs-crossing-deluxe-v1",
+      "approximate_size_mb": 77,
+      "tracks": [
+        {
+          "id": "welcome_to_towballs",
+          "file": "welcome_to_towballs.m4a",
+          "title": "Welcome to Towball's Crossing",
+          "biomes": [
+            "grassland"
+          ],
+          "tags": [
+            "intro"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "enjoying_the_sunrise",
+          "file": "enjoying_the_sunrise.m4a",
+          "title": "Enjoying the Sunrise",
+          "biomes": [
+            "grassland"
+          ],
+          "tags": [
+            "dawn"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "spring_in_the_air",
+          "file": "spring_in_the_air.m4a",
+          "title": "Spring is in the Air",
+          "biomes": [
+            "grassland"
+          ],
+          "tags": [
+            "day"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "island_life",
+          "file": "island_life.m4a",
+          "title": "Island Life",
+          "biomes": [
+            "tropics"
+          ],
+          "tags": [
+            "day"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "farmers_market",
+          "file": "farmers_market.m4a",
+          "title": "At the Farmer's Market",
+          "biomes": [
+            "grassland"
+          ],
+          "tags": [
+            "day"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "tax_office",
+          "file": "tax_office.m4a",
+          "title": "Tax Office",
+          "biomes": [],
+          "tags": [
+            "quirky"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "afternoon_boredom",
+          "file": "afternoon_boredom.m4a",
+          "title": "Afternoon Boredom",
+          "biomes": [],
+          "tags": [
+            "day"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "spooky_time",
+          "file": "spooky_time.m4a",
+          "title": "Spooky Time",
+          "biomes": [],
+          "tags": [
+            "spooky"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "snowed_in",
+          "file": "snowed_in.m4a",
+          "title": "Snowed In",
+          "biomes": [
+            "winter"
+          ],
+          "tags": [
+            "day"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "goodnight",
+          "file": "goodnight.m4a",
+          "title": "Goodnight and Sweet Dreams",
+          "biomes": [],
+          "tags": [
+            "night"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "welcome_to_towballs_std",
+          "file": "welcome_to_towballs_std.m4a",
+          "title": "Welcome to Towball's Crossing (Standard)",
+          "biomes": [
+            "grassland"
+          ],
+          "tags": [
+            "intro"
+          ],
+          "loopable": false
+        },
+        {
+          "id": "enjoying_the_sunrise_std",
+          "file": "enjoying_the_sunrise_std.m4a",
+          "title": "Enjoying the Sunrise (Standard)",
+          "biomes": [
+            "grassland"
+          ],
+          "tags": [
+            "dawn"
+          ],
+          "loopable": false
+        },
+        {
+          "id": "spring_in_the_air_std",
+          "file": "spring_in_the_air_std.m4a",
+          "title": "Spring is in the Air (Standard)",
+          "biomes": [
+            "grassland"
+          ],
+          "tags": [
+            "day"
+          ],
+          "loopable": false
+        },
+        {
+          "id": "island_life_std",
+          "file": "island_life_std.m4a",
+          "title": "Island Life (Standard)",
+          "biomes": [
+            "tropics"
+          ],
+          "tags": [
+            "day"
+          ],
+          "loopable": false
+        },
+        {
+          "id": "farmers_market_std",
+          "file": "farmers_market_std.m4a",
+          "title": "At the Farmer's Market (Standard)",
+          "biomes": [
+            "grassland"
+          ],
+          "tags": [
+            "day"
+          ],
+          "loopable": false
+        },
+        {
+          "id": "tax_office_std",
+          "file": "tax_office_std.m4a",
+          "title": "Tax Office (Standard)",
+          "biomes": [],
+          "tags": [
+            "quirky"
+          ],
+          "loopable": false
+        },
+        {
+          "id": "afternoon_boredom_std",
+          "file": "afternoon_boredom_std.m4a",
+          "title": "Afternoon Boredom (Standard)",
+          "biomes": [],
+          "tags": [
+            "day"
+          ],
+          "loopable": false
+        },
+        {
+          "id": "spooky_time_std",
+          "file": "spooky_time_std.m4a",
+          "title": "Spooky Time (Standard)",
+          "biomes": [],
+          "tags": [
+            "spooky"
+          ],
+          "loopable": false
+        },
+        {
+          "id": "snowed_in_std",
+          "file": "snowed_in_std.m4a",
+          "title": "Snowed In (Standard)",
+          "biomes": [
+            "winter"
+          ],
+          "tags": [
+            "day"
+          ],
+          "loopable": false
+        },
+        {
+          "id": "goodnight_std",
+          "file": "goodnight_std.m4a",
+          "title": "Goodnight and Sweet Dreams (Standard)",
+          "biomes": [],
+          "tags": [
+            "night"
+          ],
+          "loopable": false
+        },
+        {
+          "id": "town_06h",
+          "file": "town_06h.m4a",
+          "title": "6 AM",
+          "biomes": [],
+          "tags": [
+            "dawn"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "town_07h",
+          "file": "town_07h.m4a",
+          "title": "7 AM",
+          "biomes": [],
+          "tags": [
+            "dawn"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "town_08h",
+          "file": "town_08h.m4a",
+          "title": "8 AM",
+          "biomes": [],
+          "tags": [
+            "dawn"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "town_09h",
+          "file": "town_09h.m4a",
+          "title": "9 AM",
+          "biomes": [],
+          "tags": [
+            "dawn"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "town_10h",
+          "file": "town_10h.m4a",
+          "title": "10 AM",
+          "biomes": [],
+          "tags": [
+            "day"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "town_11h",
+          "file": "town_11h.m4a",
+          "title": "11 AM",
+          "biomes": [],
+          "tags": [
+            "day"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "town_12h",
+          "file": "town_12h.m4a",
+          "title": "Noon",
+          "biomes": [],
+          "tags": [
+            "day"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "town_13h",
+          "file": "town_13h.m4a",
+          "title": "1 PM",
+          "biomes": [],
+          "tags": [
+            "day"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "town_14h",
+          "file": "town_14h.m4a",
+          "title": "2 PM",
+          "biomes": [],
+          "tags": [
+            "day"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "town_15h",
+          "file": "town_15h.m4a",
+          "title": "3 PM",
+          "biomes": [],
+          "tags": [
+            "day"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "town_16h",
+          "file": "town_16h.m4a",
+          "title": "4 PM",
+          "biomes": [],
+          "tags": [
+            "day"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "town_17h",
+          "file": "town_17h.m4a",
+          "title": "5 PM",
+          "biomes": [],
+          "tags": [
+            "day"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "town_day_to_night",
+          "file": "town_day_to_night.m4a",
+          "title": "From Day to Night",
+          "biomes": [],
+          "tags": [
+            "dusk"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "town_18h",
+          "file": "town_18h.m4a",
+          "title": "6 PM",
+          "biomes": [],
+          "tags": [
+            "dusk"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "town_19h",
+          "file": "town_19h.m4a",
+          "title": "7 PM",
+          "biomes": [],
+          "tags": [
+            "dusk"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "town_20h",
+          "file": "town_20h.m4a",
+          "title": "8 PM",
+          "biomes": [],
+          "tags": [
+            "evening"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "town_21h",
+          "file": "town_21h.m4a",
+          "title": "9 PM",
+          "biomes": [],
+          "tags": [
+            "evening"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "town_22h",
+          "file": "town_22h.m4a",
+          "title": "10 PM",
+          "biomes": [],
+          "tags": [
+            "evening"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "town_23h",
+          "file": "town_23h.m4a",
+          "title": "11 PM",
+          "biomes": [],
+          "tags": [
+            "evening"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "town_00h",
+          "file": "town_00h.m4a",
+          "title": "Midnight",
+          "biomes": [],
+          "tags": [
+            "night"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "town_01h",
+          "file": "town_01h.m4a",
+          "title": "1 AM",
+          "biomes": [],
+          "tags": [
+            "night"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "town_02h",
+          "file": "town_02h.m4a",
+          "title": "2 AM",
+          "biomes": [],
+          "tags": [
+            "night"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "town_03h",
+          "file": "town_03h.m4a",
+          "title": "3 AM",
+          "biomes": [],
+          "tags": [
+            "night"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "town_04h",
+          "file": "town_04h.m4a",
+          "title": "4 AM",
+          "biomes": [],
+          "tags": [
+            "night"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "town_05h_goodbye",
+          "file": "town_05h_goodbye.m4a",
+          "title": "5 AM (Goodbye)",
+          "biomes": [],
+          "tags": [
+            "dawn"
+          ],
+          "loopable": true
+        },
+        {
+          "id": "kk_bumblebee",
+          "file": "kk_bumblebee.m4a",
+          "title": "K.K. Glider: Bumblebee",
+          "biomes": [],
+          "tags": [
+            "bonus"
+          ],
+          "loopable": false
+        },
+        {
+          "id": "kk_kickin_it",
+          "file": "kk_kickin_it.m4a",
+          "title": "K.K. Glider: Kickin' It",
+          "biomes": [],
+          "tags": [
+            "bonus"
+          ],
+          "loopable": false
+        },
+        {
+          "id": "kk_dark_and_brooding",
+          "file": "kk_dark_and_brooding.m4a",
+          "title": "K.K. Glider: Dark and Brooding Metal",
+          "biomes": [],
+          "tags": [
+            "bonus",
+            "spooky"
+          ],
+          "loopable": false
+        },
+        {
+          "id": "kk_toein_the_line",
+          "file": "kk_toein_the_line.m4a",
+          "title": "K.K. Glider: Toein' the Line",
+          "biomes": [],
+          "tags": [
+            "bonus"
+          ],
+          "loopable": false
+        }
+      ]
+    }
+  ]
 }
