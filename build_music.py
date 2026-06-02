@@ -448,8 +448,8 @@ def _track_to_manifest(track: TrackSpec) -> dict:
         "id": track.slug,
         "file": f"{track.slug}{Path(track.source).suffix}",
         "title": track.title,
-        "biomes": list(track.biomes),
-        "tags": list(track.tags),
+        "biomes": track.biomes,
+        "tags": track.tags,
         "loopable": track.loopable,
     }
 

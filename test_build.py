@@ -59,19 +59,12 @@ class TestPickBlank:
         assert text == "manger"
 
     def test_falls_back_to_adv(self):
+        # No VERB available, so picker should fall back to ADV.
         tokens = [
-            ["Je", "PRON", 0],
-            ["le", "DET", 3],
-            ["sais", "VERB", 6],  # stopword? no — but let's make one that is
-            ["maintenant", "ADV", 11],
-        ]
-        # sais is not in our stops set, so it would be picked as VERB.
-        # Test the fallback by only having ADV available:
-        tokens_adv_only = [
             ["le", "DET", 0],
             ["maintenant", "ADV", 3],
         ]
-        text, pos, idx = pick_blank(tokens_adv_only, STOPS)
+        text, pos, idx = pick_blank(tokens, STOPS)
         assert pos == "ADV"
         assert text == "maintenant"
 

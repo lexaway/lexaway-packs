@@ -70,7 +70,6 @@ CEFR_TO_LEVEL = {
 # ---------------------------------------------------------------------------
 
 def download_file(url: str, dest: Path) -> None:
-    """Download a file with progress."""
     print(f"  Downloading {dest.name}...")
     with httpx.stream("GET", url, follow_redirects=True) as r:
         r.raise_for_status()
@@ -229,7 +228,6 @@ def tag_and_checkpoint(pairs: list[tuple[str, str, str]], lang: str, from_lang: 
 
 
 def load_checkpoint(from_lang: str, lang: str) -> list[dict]:
-    """Read JSONL checkpoint."""
     tagged = []
     with open(checkpoint_path(from_lang, lang)) as f:
         for line in f:
@@ -265,7 +263,7 @@ def build_distractor_pools(
 
 
 def pick_blank(
-    tokens: list[list], stops: set[str]
+    tokens: list[list[str | int]], stops: set[str]
 ) -> tuple[str, str, int] | None:
     """Pick best token to blank.
 
