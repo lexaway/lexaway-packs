@@ -448,7 +448,6 @@ def write_database(
 
     conn.commit()
 
-    # Stats
     size_kb = output_path.stat().st_size / 1024
     print(f"\n{'='*60}")
     print(f"  {output_path} ({size_kb:.0f} KB)")
@@ -522,11 +521,9 @@ def main():
     from_lang = args.from_lang
     print(f"\n  Building language pack: {from_lang}→{lang}\n")
 
-    # Download
     print("Step 1: Ensure data files...")
     ensure_downloads(lang, from_lang)
 
-    # Load & filter
     print("Step 2: Loading and filtering pairs...")
     excluded = load_excluded_ids(DATA_DIR / f"{lang}_tags.tsv.bz2")
     print(f"  {len(excluded):,} sentences excluded by tags")
@@ -534,7 +531,6 @@ def main():
     pairs = load_pairs(lang, from_lang, excluded)
     print(f"  {len(pairs):,} pairs after filtering")
 
-    # Stage 1: Tag
     cp = checkpoint_path(from_lang, lang)
     if cp.exists() and not args.force:
         print(f"Step 3: Checkpoint found ({cp}), skipping tagging")
@@ -542,7 +538,6 @@ def main():
         print("Step 3: POS tagging...")
         tag_and_checkpoint(pairs, lang, from_lang)
 
-    # Stage 2: Build
     print("Step 4: Loading checkpoint...")
     tagged = load_checkpoint(from_lang, lang)
     print(f"  {len(tagged):,} tagged sentences")
