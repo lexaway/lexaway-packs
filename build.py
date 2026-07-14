@@ -136,8 +136,7 @@ def load_pairs(
 ) -> list[tuple[str, str, str]]:
     """Load filtered sentence pairs: (source_id, phrase, translation).
 
-    Filters: 4-20 words, not excluded, Tom/Mary capped at 3%.
-    Samples down to TARGET_SENTENCES.
+    Filters to 4-20 words, drops excluded, caps Tom/Mary at 3%, samples to TARGET_SENTENCES.
     """
     lang_sents = load_sentences(DATA_DIR / f"{lang}_sentences.tsv.bz2")
     from_sents = load_sentences(DATA_DIR / f"{from_lang}_sentences.tsv.bz2")
@@ -155,7 +154,7 @@ def load_pairs(
             if 4 <= wc <= 20:
                 pairs.append((lang_id, text, from_sents[from_id]))
 
-    # Deduplicate by source_id (links file can have multiple English translations)
+    # links file can have multiple English translations per source_id
     seen = set()
     unique = []
     for src_id, phrase, translation in pairs:
@@ -164,7 +163,6 @@ def load_pairs(
             unique.append((src_id, phrase, translation))
     pairs = unique
 
-    # Cap Tom/Mary sentences
     tom_mary = [(i, p) for i, p in enumerate(pairs) if TOM_MARY_RE.search(p[1])]
     max_tm = int(len(pairs) * TOM_MARY_CAP)
     if len(tom_mary) > max_tm:
@@ -172,7 +170,6 @@ def load_pairs(
         to_drop = set(i for i, _ in random.sample(tom_mary, len(tom_mary) - max_tm))
         pairs = [p for i, p in enumerate(pairs) if i not in to_drop]
 
-    # Sample down to target
     if len(pairs) > TARGET_SENTENCES:
         random.seed(42)
         pairs = random.sample(pairs, TARGET_SENTENCES)

@@ -43,9 +43,8 @@ def fetch_word_list() -> list[str]:
 def pos_filter(words: list[str]) -> list[tuple[int, str]]:
     """Keep words whose isolated POS tag is NOUN/VERB/ADJ.
 
-    Tagging a single word out of context is imprecise — many ambiguous words
-    will be misclassified. That's fine for a coarse filter; review agents
-    will catch leftover noise.
+    Single-word tagging is imprecise (no context), but fine as a coarse filter;
+    review agents catch leftover noise.
     """
     nlp = spacy.load("en_core_web_md")
     kept = []
@@ -76,7 +75,7 @@ def main() -> None:
     print(f"Kept {len(kept)} after POS filter (NOUN/VERB/ADJ)")
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    # Clear any prior artifacts — word2word-era CSVs and earlier eng batches.
+    # Clear prior artifacts: word2word-era CSVs and earlier eng batches.
     for old in OUTPUT_DIR.glob("words_*.csv"):
         old.unlink()
     for old in OUTPUT_DIR.glob("eng_*.csv"):

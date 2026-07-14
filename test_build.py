@@ -59,7 +59,7 @@ class TestPickBlank:
         assert text == "manger"
 
     def test_falls_back_to_adv(self):
-        # No VERB available, so picker should fall back to ADV.
+        # No preferred POS, so falls back to ADV.
         tokens = [
             ["le", "DET", 0],
             ["maintenant", "ADV", 3],

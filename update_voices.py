@@ -1,7 +1,6 @@
 """Inject the voice catalog from voices.py into manifest.json.
 
-Idempotent. Run this whenever voices.py changes (and once before each release,
-which release.sh wires in for you).
+Idempotent. Run whenever voices.py changes; release.sh runs it per release.
 
 Usage:
     uv run python update_voices.py

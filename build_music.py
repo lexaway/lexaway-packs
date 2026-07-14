@@ -1,19 +1,15 @@
 """Bundle a music pack into a deterministic tar.bz2 + refresh manifest.json.
 
-Source files live under `music/<pack_id>_raw/` (any nested folder layout).
-For each pack defined in `_PACKS` below, this script:
+Source files live under `music/<pack_id>_raw/` (any nested layout). For each
+pack in `_PACKS`:
 
-  1. Renames each track to a stable slug (so the on-device tar layout is flat
-     and predictable — `island_life.m4a`, not `04 Island Life (Loopable…).m4a`).
-  2. Writes the renamed tracks into `music/<archive_name>.tar.bz2`, sorting
-     entries and zeroing tar metadata so re-running with the same inputs
-     produces byte-identical archives.
-  3. Patches the `music` array in `manifest.json` with pack + track metadata
-     (biomes, tags, loopable). Other manifest sections (`packs`, `voices`,
-     `schema_version`) are preserved untouched.
+  1. Rename each track to a stable slug (flat on-device layout).
+  2. Write tracks into `music/<archive_name>.tar.bz2`, sorting entries and
+     zeroing tar metadata for byte-identical rebuilds.
+  3. Patch the `music` array in `manifest.json`; other top-level sections
+     preserved untouched.
 
-Edit `_PACKS` to curate biome tags / add new packs. Run with `uv run python
-build_music.py`.
+Edit `_PACKS` to curate biome tags / add packs. Run `uv run python build_music.py`.
 """
 
 from __future__ import annotations
@@ -51,9 +47,8 @@ class PackSpec:
     tracks: list[TrackSpec]
 
 
-# Curate biome tags here. Empty `biomes` = filler (plays in any biome when
-# nothing biome-specific is available). The Lexaway app currently has three
-# biomes: grassland, tropics, winter.
+# Empty `biomes` = filler (plays when no biome-specific track available).
+# App biomes: grassland, tropics, winter.
 _PACKS: list[PackSpec] = [
     PackSpec(
         pack_id="towballs_crossing_deluxe",
@@ -61,7 +56,7 @@ _PACKS: list[PackSpec] = [
         archive_name="music-towballs-crossing-deluxe-v1",
         raw_dir="towballs_crossing_deluxe_raw",
         tracks=[
-            # Loopable variants — preferred for in-game ambient loops.
+            # Loopable variants — preferred for ambient loops.
             TrackSpec(
                 source="Towballs Crossing Deluxe! Loopable Tracks/01 Welcome To Towballs Crossing Deluxe! (Loopable Version).m4a",
                 slug="welcome_to_towballs",
@@ -128,10 +123,9 @@ _PACKS: list[PackSpec] = [
                 title="Goodnight and Sweet Dreams",
                 tags=["night"],
             ),
-            # Standard (non-loopable) versions of the deluxe tracks. Same
-            # songs as the loopable variants above, but with the original
-            # endings — useful as one-shot picks where a clean fade-out
-            # feels right. Same biome tags as their loopable counterparts.
+            # Standard (non-loopable) versions: same songs as the loopable
+            # variants but with original endings — one-shot picks with a
+            # clean fade-out. Same biome tags as their counterparts.
             TrackSpec(
                 source="Towballs Crossing Deluxe! Standard Tracks/01 Welcome To Towballs Crossing Deluxe!.m4a",
                 slug="welcome_to_towballs_std",
@@ -208,12 +202,9 @@ _PACKS: list[PackSpec] = [
                 tags=["night"],
                 loopable=False,
             ),
-            # Original Towball's Crossing time-of-day tracks. Tagged by
-            # diurnal phase, no biome (fillers — they're town-themed, not
-            # place-themed). Note: source file 06's filename says "10pm"
-            # but its position in the sequence (between 9am and 11am)
-            # makes clear it's the 10am track — the original filename is
-            # a typo.
+            # Original time-of-day tracks. Tagged by diurnal phase, no biome
+            # (town-themed fillers). Source file 06 is named "10pm" but sits
+            # between 9am and 11am — it's the 10am track (filename typo).
             TrackSpec(
                 source="Towball's Crossing/02 6am _ Towballs Crossing.m4a",
                 slug="town_06h",
@@ -399,9 +390,8 @@ _PACKS: list[PackSpec] = [
 
 
 def _build_archive(pack: PackSpec) -> Path:
-    """Write `<archive_name>.tar.bz2` containing every track in [pack],
-    renamed to its slug. Deterministic: sorted entries, fixed mtime, no
-    user/group metadata."""
+    """Write `<archive_name>.tar.bz2` with each track renamed to its slug.
+    Deterministic: sorted entries, fixed mtime, no user/group metadata."""
     raw_root = MUSIC_DIR / pack.raw_dir
     if not raw_root.is_dir():
         raise FileNotFoundError(
