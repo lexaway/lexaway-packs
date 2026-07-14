@@ -355,35 +355,6 @@ _PACKS: list[PackSpec] = [
                 title="5 AM (Goodbye)",
                 tags=["dawn"],
             ),
-            # K.K. Glider bonus tracks — non-loopable performances, fillers.
-            TrackSpec(
-                source="Towballs Crossing Deluxe! Standard Tracks/11 K.K. Glider_ Bumblebee.m4a",
-                slug="kk_bumblebee",
-                title="K.K. Glider: Bumblebee",
-                tags=["bonus"],
-                loopable=False,
-            ),
-            TrackSpec(
-                source="Towballs Crossing Deluxe! Standard Tracks/12 K.K. Glider - Kickin' It.m4a",
-                slug="kk_kickin_it",
-                title="K.K. Glider: Kickin' It",
-                tags=["bonus"],
-                loopable=False,
-            ),
-            TrackSpec(
-                source="Towballs Crossing Deluxe! Standard Tracks/13 KK Glider - Dark and Brooding Metal.m4a",
-                slug="kk_dark_and_brooding",
-                title="K.K. Glider: Dark and Brooding Metal",
-                tags=["bonus", "spooky"],
-                loopable=False,
-            ),
-            TrackSpec(
-                source="Towballs Crossing Deluxe! Standard Tracks/14 K.K. Glider - Toein' the Line.m4a",
-                slug="kk_toein_the_line",
-                title="K.K. Glider: Toein' the Line",
-                tags=["bonus"],
-                loopable=False,
-            ),
         ],
     ),
 ]
